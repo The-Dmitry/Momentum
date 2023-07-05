@@ -1,0 +1,20 @@
+$index: calc(1vw + 1vh);
+
+.clock {
+  color: white;
+  grid-row: 2;
+  grid-column: span 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  user-select: none;
+}
+
+.time {
+  font-size: calc($index * 5);
+}
+
+.date {
+  font-size: calc($index * 2);
+}

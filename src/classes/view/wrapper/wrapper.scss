@@ -1,0 +1,71 @@
+$color: #ffffff1f;
+$color-on-hover: #fffffff0;
+
+body,
+html {
+  height: 100%;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  transition: background-image linear 0.7s;
+}
+
+.prev-img,
+.next-img {
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+  color: transparent;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 100%;
+    top: 35%;
+    right: 50%;
+    transform: rotate(45deg);
+    background-color: $color;
+    transition: background-color linear 0.3s;
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 100%;
+    top: -35%;
+    right: 50%;
+    transform: rotate(-45deg);
+    background-color: $color;
+    transition: background-color linear 0.3s;
+  }
+  &:hover {
+    &::before {
+      background-color: $color-on-hover;
+    }
+    &::after {
+      background-color: $color-on-hover;
+    }
+  }
+}
+
+.prev-img {
+  left: 1vw;
+  transform: rotate(180deg) translate(0, 50%);
+}
+
+.next-img {
+  right: 1vw;
+}
