@@ -26,4 +26,17 @@ export default class View {
   public addInnerElement(classInstance: View[]) {
     classInstance.forEach((inst) => this.viewNode.addInnerNode(inst.getElement()));
   }
+
+  protected appendNodesArray(list: NodeCreator[], parent?: NodeCreator) {
+    list.forEach((node) => {
+      if (parent) {
+        parent.addInnerNode(node);
+        return;
+      }
+      this.viewNode.addInnerNode(node);
+    });
+    if (parent) {
+      this.viewNode.addInnerNode(parent);
+    }
+  }
 }

@@ -10,7 +10,7 @@ export default class Wrapper extends View {
 
   constructor() {
     const params: INewNode = {
-      tag: 'section',
+      tag: 'div',
       cssClasses: ['wrapper'],
       textContent: null,
       callback: null,

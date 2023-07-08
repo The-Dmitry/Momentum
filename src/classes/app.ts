@@ -1,5 +1,6 @@
 import './_normalize.scss';
 import ClockView from './view/clock/clock-view';
+import Player from './view/player/player-view';
 import Wrapper from './view/wrapper/wrapper-view';
 
 export default class App {
@@ -11,8 +12,9 @@ export default class App {
   private createView() {
     const wrapper = new Wrapper();
     const clock = new ClockView();
+    const player = new Player();
 
     document.body.append(wrapper.getElement());
-    wrapper.addInnerElement([clock]);
+    wrapper.addInnerElement([clock, player]);
   }
 }

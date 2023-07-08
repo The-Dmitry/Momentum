@@ -45,12 +45,4 @@ export default class ClockView extends View {
       this.updateClock(timeNode, dateNode);
     }, 1000);
   }
-
-  // private test() {
-  //   const audio = new Audio();
-  //   audio.src = 'https://radiorecord.hostingradio.ru/rus96.aacp';
-  //   document.onclick = () => {
-  //     audio.play();
-  //   };
-  // }
 }

@@ -21,6 +21,7 @@ export default class NodeCreator {
 
   public setClassNames(cssList: string[] | null) {
     if (cssList) {
+      this.node.className = '';
       this.node.classList.add(...cssList);
     }
   }
@@ -29,10 +30,10 @@ export default class NodeCreator {
     this.node.textContent = text;
   }
 
-  public setCallback(callback: null | ((flag?: boolean) => void) | void) {
+  public setCallback(callback: null | ((e: MouseEvent) => void) | void) {
     if (callback) {
-      this.node.addEventListener('click', () => {
-        callback();
+      this.node.addEventListener('click', (e) => {
+        callback(e);
       });
     }
   }
