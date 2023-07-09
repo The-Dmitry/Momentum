@@ -2,11 +2,15 @@ import './wrapper.scss';
 import INewNode from 'classes/util/interfaces/INewNode';
 import NodeCreator from '../../util/node-creator';
 import View from '../view';
+import EventEmitter from '../emitter/event-emitter';
+import ClockView from '../clock/clock-view';
 
 export default class Wrapper extends View {
   private bgNumber: number;
 
   private dayPart: string;
+
+  private emitter: EventEmitter;
 
   constructor() {
     const params: INewNode = {
@@ -17,8 +21,12 @@ export default class Wrapper extends View {
     };
     super(params);
     this.bgNumber = 1;
-    this.dayPart = 'night';
+    this.dayPart = ClockView.getPartOfDay();
+    this.emitter = EventEmitter.getInstance();
     this.configureView();
+    this.emitter.subscribe('part-of-day', () => {
+      this.updateBackground();
+    });
   }
 
   private configureView() {
@@ -53,6 +61,11 @@ export default class Wrapper extends View {
         this.dayPart
       }/${`${this.bgNumber}`.padStart(2, '0')}.jpg)`;
     };
+  }
+
+  private updateBackground() {
+    this.dayPart = ClockView.getPartOfDay();
+    this.setBackground();
   }
 
   private nextImage() {

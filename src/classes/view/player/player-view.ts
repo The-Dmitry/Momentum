@@ -27,43 +27,61 @@ export default class Player extends View {
       callback: null,
     };
     super(params);
+    this.emitter = EventEmitter.getInstance();
     this.configureView();
     this.songId = 0;
     this.song = new Audio();
     this.song.src = music.stations[this.songId].stream_320;
     this.isPlaying = false;
-    this.emitter = EventEmitter.getInstance();
     this.playListNode = null;
   }
 
   private configureView() {
-    [
-      {
-        tag: 'button',
-        cssClasses: ['prev-song'],
-        textContent: 'prev',
-        callback: this.switchSong.bind(this, -1),
-      },
-      {
-        tag: 'button',
-        cssClasses: ['play'],
-        textContent: 'play',
-        callback: this.playOrPause.bind(this),
-      },
-      {
-        tag: 'button',
-        cssClasses: ['next-song'],
-        textContent: 'next',
-        callback: this.switchSong.bind(this, 1),
-      },
-      {
-        tag: 'button',
-        cssClasses: ['player-list'],
-        textContent: 'list',
-        callback: this.generatePlaylistNode.bind(this),
-      },
-    ].forEach((node) => {
-      this.viewNode.addInnerNode(new NodeCreator(node));
+    const prev = new NodeCreator({
+      tag: 'button',
+      cssClasses: ['prev-song'],
+      textContent: 'prev',
+      callback: this.switchSong.bind(this, -1),
+    });
+    const play = new NodeCreator({
+      tag: 'button',
+      cssClasses: ['play'],
+      textContent: 'play',
+      callback: this.playOrPause.bind(this),
+    });
+    const next = new NodeCreator({
+      tag: 'button',
+      cssClasses: ['next-song'],
+      textContent: 'next',
+      callback: this.switchSong.bind(this, 1),
+    });
+    const list = new NodeCreator({
+      tag: 'button',
+      cssClasses: ['player-list'],
+      textContent: 'list',
+      callback: this.generatePlaylistNode.bind(this),
+    });
+    const songNameArea = new NodeCreator({
+      tag: 'p',
+      cssClasses: ['song-name'],
+      textContent: '',
+      callback: null,
+    });
+    this.appendNodesArray([prev, next, play, list, songNameArea]);
+    this.emitter.subscribe('song-name', (songName) => {
+      songNameArea.setTextContent(songName || '');
+      if (songName) {
+        songNameArea.setClassNames(['song-name', 'song-name_visible']);
+        return;
+      }
+      songNameArea.setClassNames(['song-name']);
+    });
+    this.emitter.subscribe('is-play', (str) => {
+      if (str) {
+        play.getNode().classList.add('active');
+        return;
+      }
+      play.getNode().classList.remove('active');
     });
   }
 
@@ -112,9 +130,15 @@ export default class Player extends View {
   }
 
   private generatePlaylistItem(station: IStation, index: number): NodeCreator {
+    let css = [];
+    if (this.isPlaying) {
+      css = this.songId === index ? ['playlist-item', 'playing'] : ['playlist-item'];
+    } else {
+      css = ['playlist-item'];
+    }
     const container: INewNode = {
       tag: 'li',
-      cssClasses: ['playlist-item'],
+      cssClasses: css,
       textContent: null,
       callback: () => {
         if (this.songId === index) {
@@ -127,6 +151,8 @@ export default class Player extends View {
         }
         this.songId = index;
         this.playSong();
+        console.log(this.songId);
+
         this.emitter.dispatch('song', `${this.songId}`);
       },
     };
@@ -155,19 +181,24 @@ export default class Player extends View {
     this.song.play();
     this.isPlaying = true;
     this.emitter.dispatch('song', `${this.songId}`);
+    this.emitter.dispatch('song-name', `${music.stations[this.songId].title}`);
+    this.emitter.dispatch('is-play', '123');
   }
 
   private pauseSong() {
     this.song.pause();
     this.isPlaying = false;
     this.emitter.dispatch('song', `${999}`);
+    this.emitter.dispatch('song-name', '');
+    this.emitter.dispatch('is-play', '');
   }
 
   private playOrPause() {
-    this.song.src = music.stations[this.songId].stream_320;
+    this.emitter.dispatch('song-name', '');
     if (this.isPlaying) {
       this.pauseSong();
     } else {
+      this.song.src = music.stations[this.songId].stream_320;
       this.playSong();
     }
   }
