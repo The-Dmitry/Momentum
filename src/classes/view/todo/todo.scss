@@ -1,0 +1,18 @@
+.todo {
+  grid-row: 3;
+  grid-column: 1;
+  background-color: rgba(0, 0, 0, 0.79);
+  width: 50%;
+  height: 100%;
+  color: white;
+}
+
+.todo-item {
+  display: flex;
+  gap: 15px;
+  &_completed {
+    .todo-item__text {
+      text-decoration: line-through;
+    }
+  }
+}

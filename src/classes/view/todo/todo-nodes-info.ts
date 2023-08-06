@@ -1,0 +1,72 @@
+const todoNodesInfo = {
+  mainInput: {
+    tag: 'input',
+    type: 'text',
+    cssClasses: ['todo__main-input'],
+    textContent: null,
+    callback: null,
+    placeholder: '...Type something',
+  },
+  buttonContainer: {
+    tag: 'div',
+    cssClasses: ['todo__nav'],
+    textContent: null,
+    callback: null,
+  },
+  buttonAll: {
+    tag: 'input',
+    type: 'radio',
+    name: 'todo_nav',
+    cssClasses: ['todo__button', 'todo__button_all'],
+    textContent: null,
+    callback: null,
+    id: 'all',
+  },
+  buttonAllLabel: {
+    tag: 'label',
+    cssClasses: ['todo__label', 'todo__label_all'],
+    textContent: 'all',
+    callback: null,
+    for: 'all',
+  },
+  buttonPending: {
+    tag: 'input',
+    type: 'radio',
+    name: 'todo_nav',
+    cssClasses: ['todo__button', 'todo__button_pending'],
+    textContent: null,
+    callback: null,
+    id: 'pending',
+  },
+  buttonPendingLabel: {
+    tag: 'label',
+    cssClasses: ['todo__label', 'todo__label_pending'],
+    textContent: 'pending',
+    callback: null,
+    for: 'pending',
+  },
+  buttonCompleted: {
+    tag: 'input',
+    type: 'radio',
+    name: 'todo_nav',
+    cssClasses: ['todo__button', 'todo__button_completed'],
+    textContent: null,
+    callback: null,
+    id: 'completed',
+  },
+  buttonCompletedLabel: {
+    tag: 'label',
+    cssClasses: ['todo__label', 'todo__label_completed'],
+    textContent: 'completed',
+    callback: null,
+    for: 'completed',
+  },
+  todoList: {
+    tag: 'ul',
+    cssClasses: ['todo__list'],
+    textContent: null,
+    callback: null,
+  },
+};
+
+export default todoNodesInfo;

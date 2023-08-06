@@ -61,20 +61,18 @@ export default class Player extends View {
       textContent: 'list',
       callback: this.generatePlaylistNode.bind(this),
     });
-    const songNameArea = new NodeCreator({
-      tag: 'p',
-      cssClasses: ['song-name'],
-      textContent: '',
-      callback: null,
-    });
-    this.appendNodesArray([prev, next, play, list, songNameArea]);
+    this.appendNodesArray([prev, next, play, list]);
     this.emitter.subscribe('song-name', (songName) => {
-      songNameArea.setTextContent(songName || '');
-      if (songName) {
-        songNameArea.setClassNames(['song-name', 'song-name_visible']);
-        return;
-      }
-      songNameArea.setClassNames(['song-name']);
+      const songNameArea = new NodeCreator({
+        tag: 'marquee',
+        cssClasses: ['song-name'],
+        textContent: songName || '',
+        callback: null,
+      });
+      this.appendNodesArray([songNameArea]);
+      this.emitter.subscribe('delete-song-name', () => {
+        songNameArea.getNode().remove();
+      });
     });
     this.emitter.subscribe('is-play', (str) => {
       if (str) {
@@ -151,8 +149,6 @@ export default class Player extends View {
         }
         this.songId = index;
         this.playSong();
-        console.log(this.songId);
-
         this.emitter.dispatch('song', `${this.songId}`);
       },
     };
@@ -180,16 +176,17 @@ export default class Player extends View {
     this.song.pause();
     this.song.play();
     this.isPlaying = true;
+    this.emitter.dispatch('delete-song-name');
     this.emitter.dispatch('song', `${this.songId}`);
-    this.emitter.dispatch('song-name', `${music.stations[this.songId].title}`);
+    this.emitter.dispatch('song-name', `${music.stations[this.songId].title} - ${music.stations[this.songId].tooltip}`);
     this.emitter.dispatch('is-play', '123');
   }
 
   private pauseSong() {
     this.song.pause();
     this.isPlaying = false;
+    this.emitter.dispatch('delete-song-name');
     this.emitter.dispatch('song', `${999}`);
-    this.emitter.dispatch('song-name', '');
     this.emitter.dispatch('is-play', '');
   }
 

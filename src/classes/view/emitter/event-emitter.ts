@@ -13,7 +13,6 @@ export default class EventEmitter {
     const list = this.listeners.get(eventName) || new Set();
     list.add(callback);
     this.listeners.set(eventName, list);
-    // console.log(this.listeners);
   }
 
   public unsubscribe(eventName: string, callback: CollectionCallback) {
@@ -25,8 +24,6 @@ export default class EventEmitter {
 
   public dispatch(eventName: string, parameter?: string) {
     const list = this.listeners.get(eventName);
-    // console.log(123);
-
     if (list && list.size) {
       list.forEach((func) => func(parameter));
     }

@@ -12,6 +12,8 @@ export default class Wrapper extends View {
 
   private emitter: EventEmitter;
 
+  private isAllowedToSwitchBg: boolean = true;
+
   constructor() {
     const params: INewNode = {
       tag: 'div',
@@ -51,16 +53,24 @@ export default class Wrapper extends View {
   }
 
   private setBackground() {
-    this.validateBgNumber();
-    const img = new Image();
-    img.src = `https://raw.githubusercontent.com/The-Dmitry/ForMomentum/main/${
-      this.dayPart
-    }/${`${this.bgNumber}`.padStart(2, '0')}.jpg`;
-    img.onload = () => {
-      this.getElement().style.backgroundImage = `url(https://raw.githubusercontent.com/The-Dmitry/ForMomentum/main/${
+    if (this.isAllowedToSwitchBg) {
+      this.isAllowedToSwitchBg = false;
+      this.validateBgNumber();
+      const img = new Image();
+      const url = `https://raw.githubusercontent.com/The-Dmitry/ForMomentum/main/${
         this.dayPart
-      }/${`${this.bgNumber}`.padStart(2, '0')}.jpg)`;
-    };
+      }/${`${this.bgNumber}`.padStart(2, '0')}.jpg`;
+      img.src = url;
+      img.onload = () => {
+        this.getElement().style.backgroundImage = `url(${url})`;
+        setTimeout(() => {
+          this.isAllowedToSwitchBg = true;
+        }, 1500);
+      };
+      setTimeout(() => {
+        this.nextImage();
+      }, 180000);
+    }
   }
 
   private updateBackground() {

@@ -1,4 +1,5 @@
 import INewNode from 'classes/util/interfaces/INewNode';
+import InputNodeCreator from 'classes/util/input-creator';
 import NodeCreator from '../util/node-creator';
 
 export default class View {
@@ -23,11 +24,11 @@ export default class View {
     return this.viewNode.getNode();
   }
 
-  public addInnerElement(classInstance: View[]) {
+  public addInnerElement(...classInstance: View[]) {
     classInstance.forEach((inst) => this.viewNode.addInnerNode(inst.getElement()));
   }
 
-  protected appendNodesArray(list: NodeCreator[], parent?: NodeCreator) {
+  protected appendNodesArray(list: NodeCreator[] | InputNodeCreator[], parent?: NodeCreator) {
     list.forEach((node) => {
       if (parent) {
         parent.addInnerNode(node);
