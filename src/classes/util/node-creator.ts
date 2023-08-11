@@ -62,4 +62,20 @@ export default class NodeCreator {
       }
     });
   }
+
+  public prependInnerNode(...list: (NodeCreator | HTMLElement)[]) {
+    list.forEach((node) => {
+      if (node instanceof NodeCreator) {
+        this.node.prepend(node.getNode());
+      } else {
+        this.node.prepend(node);
+      }
+    });
+  }
+
+  public removeAllChildren() {
+    while (this.node.firstChild) {
+      this.node.removeChild(this.node.firstChild);
+    }
+  }
 }

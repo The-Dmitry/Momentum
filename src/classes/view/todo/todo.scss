@@ -9,10 +9,61 @@
 
 .todo-item {
   display: flex;
+  align-items: flex-start;
   gap: 15px;
+  &__text {
+    word-break: break-word;
+  }
   &_completed {
     .todo-item__text {
       text-decoration: line-through;
     }
   }
+}
+
+.todo__nav {
+  display: flex;
+  justify-content: space-around;
+}
+
+.todo-item__checkbox {
+  order: 1;
+}
+.todo-options__input,
+.todo-item__text {
+  flex: 1 1 auto;
+  order: 2;
+}
+
+.todo__button {
+  display: none;
+  &:checked {
+    & > label {
+      color: red;
+    }
+  }
+}
+
+.todo-item__button {
+  cursor: pointer;
+  display: flex;
+  transform: rotate(180deg);
+  background-color: transparent;
+  border: none;
+  font-size: 25px;
+  color: white;
+  order: 3;
+}
+
+.todo-item__button {
+  position: relative;
+}
+
+.todo-options {
+  transform: rotate(180deg);
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 7px;
+  background-color: aliceblue;
 }

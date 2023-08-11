@@ -1,4 +1,11 @@
 const todoNodesInfo = {
+  todoMainButton: {
+    tag: 'button',
+    type: 'text',
+    cssClasses: ['todo__main-button'],
+    textContent: 'ToDo',
+    callback: null,
+  },
   mainInput: {
     tag: 'input',
     type: 'text',
