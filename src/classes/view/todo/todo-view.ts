@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/comma-dangle */
 import './todo.scss';
-import INewNode from 'classes/util/interfaces/INewNode';
+import INewNode from 'classes/util/interfaces/NewNodeParams';
 import { TodoInfoForLS } from '../../util/types/TodoInfoForLS';
 import InputNodeCreator from '../../util/input-creator';
 import NodeCreator from '../../util/node-creator';
 import View from '../view';
 import EventEmitter from '../emitter/event-emitter';
-import todoNodesInfo from './todo-nodes-info';
+// import todoNodesInfo from './todo-nodes-info';
 import TodoViewItem from './todo-view-item';
 
 export default class Todo extends View {
@@ -24,7 +24,6 @@ export default class Todo extends View {
     const params: INewNode = {
       tag: 'div',
       cssClasses: ['todo'],
-      textContent: null,
       callback: null,
     };
     super(params);
@@ -47,28 +46,72 @@ export default class Todo extends View {
 
   private configureView() {
     // const todoMainButton = new NodeCreator(todoNodesInfo.todoMainButton);
-    const mainInput = new InputNodeCreator(todoNodesInfo.mainInput);
-    const buttonContainer = new NodeCreator(todoNodesInfo.buttonContainer);
-    const buttonAll = new InputNodeCreator(todoNodesInfo.buttonAll);
+    const mainInput = new InputNodeCreator({
+      tag: 'input',
+      type: 'text',
+      cssClasses: ['todo__main-button'],
+      placeholder: 'Type something...',
+    });
+    const buttonContainer = new NodeCreator({
+      tag: 'div',
+      cssClasses: ['todo__nav'],
+    });
+    const buttonAll = new InputNodeCreator({
+      tag: 'input',
+      type: 'radio',
+      name: 'todo_nav',
+      cssClasses: ['todo__button', 'todo__button_all'],
+      id: 'all',
+    });
     buttonAll.getNode().checked = true;
     buttonAll.setCallback(() => {
       this.callbackForUpdate = null;
       this.updateTodoList();
     });
-    const buttonAllLabel = new NodeCreator(todoNodesInfo.buttonAllLabel);
-    const buttonPending = new InputNodeCreator(todoNodesInfo.buttonPending);
+    const buttonAllLabel = new InputNodeCreator({
+      tag: 'label',
+      cssClasses: ['todo__label', 'todo__label_all'],
+      textContent: 'all',
+      for: 'all',
+    });
+    const buttonPending = new InputNodeCreator({
+      tag: 'input',
+      type: 'radio',
+      name: 'todo_nav',
+      cssClasses: ['todo__button', 'todo__button_pending'],
+      id: 'pending',
+    });
     buttonPending.setCallback(() => {
       this.callbackForUpdate = (x) => !x.isPending();
       this.updateTodoList();
     });
-    const buttonPendingLabel = new NodeCreator(todoNodesInfo.buttonPendingLabel);
-    const buttonCompleted = new InputNodeCreator(todoNodesInfo.buttonCompleted);
+    const buttonPendingLabel = new InputNodeCreator({
+      tag: 'label',
+      cssClasses: ['todo__label', 'todo__label_pending'],
+      textContent: 'pending',
+      for: 'pending',
+    });
+    const buttonCompleted = new InputNodeCreator({
+      tag: 'input',
+      type: 'radio',
+      name: 'todo_nav',
+      cssClasses: ['todo__button', 'todo__button_completed'],
+      id: 'completed',
+    });
     buttonCompleted.setCallback(() => {
       this.callbackForUpdate = (x) => x.isPending();
       this.updateTodoList();
     });
-    const buttonCompletedLabel = new NodeCreator(todoNodesInfo.buttonCompletedLabel);
-    const todoList = new NodeCreator(todoNodesInfo.todoList);
+    const buttonCompletedLabel = new InputNodeCreator({
+      tag: 'label',
+      cssClasses: ['todo__label', 'todo__label_completed'],
+      textContent: 'completed',
+      for: 'completed',
+    });
+    const todoList = new NodeCreator({
+      tag: 'ul',
+      cssClasses: ['todo__list'],
+    });
     this.listNode = todoList;
     mainInput.setCallback((e) => {
       const { code } = e as KeyboardEvent;

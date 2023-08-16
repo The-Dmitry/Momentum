@@ -1,5 +1,5 @@
 import './player.scss';
-import INewNode from 'classes/util/interfaces/INewNode';
+import INewNode from 'classes/util/interfaces/NewNodeParams';
 import IStation from 'classes/util/interfaces/IStation';
 import IStationList from 'classes/util/interfaces/IStationList';
 import NodeCreator from '../../util/node-creator';
@@ -19,11 +19,12 @@ export default class Player extends View {
 
   private songId: number;
 
+  private isListOpened: boolean = false;
+
   constructor() {
     const params: INewNode = {
       tag: 'section',
       cssClasses: ['player'],
-      textContent: null,
       callback: null,
     };
     super(params);
@@ -64,7 +65,7 @@ export default class Player extends View {
     this.appendNodesArray([prev, next, play, list]);
     this.emitter.subscribe('song-name', (songName) => {
       const songNameArea = new NodeCreator({
-        tag: 'marquee',
+        tag: 'div',
         cssClasses: ['song-name'],
         textContent: songName || '',
         callback: null,
@@ -85,19 +86,22 @@ export default class Player extends View {
 
   private async generatePlaylistNode() {
     if (this.playListNode) {
+      if (this.isListOpened) return;
       this.viewNode.addInnerNode(this.playListNode);
+      this.isListOpened = true;
       return;
     }
     const cross: INewNode = {
       tag: 'div',
-      textContent: null,
       cssClasses: ['close'],
-      callback: () => this.emitter.dispatch('closePlayer'),
+      callback: () => {
+        this.emitter.dispatch('closePlayer');
+        this.isListOpened = false;
+      },
     };
     const parent: INewNode = {
       tag: 'div',
       cssClasses: ['playlist'],
-      textContent: null,
       callback: this.emitter.subscribe('closePlayer', () => this.playListNode?.remove()),
     };
     const playlistTitle: INewNode = {
@@ -109,9 +113,9 @@ export default class Player extends View {
     const list: INewNode = {
       tag: 'ul',
       cssClasses: ['playlist__list'],
-      textContent: null,
       callback: null,
     };
+    this.isListOpened = true;
     const parentNode = new NodeCreator(parent);
     const nodeList = new NodeCreator(list);
     const title = new NodeCreator(playlistTitle);
@@ -137,7 +141,6 @@ export default class Player extends View {
     const container: INewNode = {
       tag: 'li',
       cssClasses: css,
-      textContent: null,
       callback: () => {
         if (this.songId === index) {
           if (this.isPlaying) {

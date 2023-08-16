@@ -1,9 +1,12 @@
+$player-width: 240px;
+
 .player {
+  overflow: hidden;
   display: grid;
-  grid-template-columns: repeat(4, auto);
+  grid-template-columns: repeat(4, minmax(10px, auto));
   grid-template-rows: repeat(1, minmax(auto, 30px));
   align-self: start;
-  max-width: 240px;
+  max-width: $player-width;
   margin: 10px 0 0 10px;
   background-color: rgba(0, 0, 0, 0.514);
   border-radius: 10px;
@@ -55,10 +58,22 @@
 .song-name {
   grid-column: span 4;
   grid-row: 2 / 3;
-  width: 90%;
-  justify-self: center;
+  width: max-content;
+  // justify-self: center;
   color: white;
   font-size: 20px;
+  display: inline-block;
+  // transform: translate(240px, 0);
+  animation: marquee 15s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translate(calc($player-width + 20px), 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
 }
 
 .playlist {
@@ -73,6 +88,16 @@
   color: white;
   border-radius: 2%;
   user-select: none;
+  animation: pop-up 0.3s;
+}
+
+@keyframes pop-up {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .playlist__title {

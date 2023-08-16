@@ -2,23 +2,20 @@ import INewInputNode from './interfaces/INewInputNode';
 // import INewNode from './interfaces/INewNode';
 import NodeCreator from './node-creator';
 
-export default class InputNodeCreator extends NodeCreator {
-  protected node: HTMLInputElement;
+export default class InputNodeCreator<T extends keyof HTMLElementTagNameMap> extends NodeCreator<T> {
+  // protected node: HTMLInputElement;
 
-  constructor(params: INewInputNode) {
+  constructor(params: INewInputNode<T>) {
     super(params);
     this.node = this.createNode(params);
   }
 
-  protected createNode(params: INewInputNode): HTMLInputElement {
-    this.node = document.createElement(params.tag) as HTMLInputElement;
-    this.node.type = params.type;
-    this.setClassNames(params.cssClasses);
-    this.setTextContent(params.textContent);
-    this.setCallback(params.callback);
+  protected createNode(params: INewInputNode<T>) {
+    super.createNode(params);
+    this.setType(params.type);
+    this.setName(params.name);
     this.setId(params.id);
     this.setPlaceholder(params.placeholder);
-    this.setName(params.name);
     return this.node;
   }
 
@@ -28,7 +25,7 @@ export default class InputNodeCreator extends NodeCreator {
     }
   }
 
-  public addInnerNode(node: NodeCreator | HTMLElement | InputNodeCreator) {
+  public addInnerNode(node: NodeCreator | HTMLElement) {
     if (node instanceof NodeCreator) {
       this.node.append(node.getNode());
     } else {
@@ -37,8 +34,14 @@ export default class InputNodeCreator extends NodeCreator {
   }
 
   protected setName(name: string | undefined) {
-    if (name) {
+    if (this.node instanceof HTMLInputElement && name) {
       this.node.name = name;
+    }
+  }
+
+  protected setType(type: string | undefined) {
+    if (this.node instanceof HTMLInputElement && type) {
+      this.node.type = type;
     }
   }
 

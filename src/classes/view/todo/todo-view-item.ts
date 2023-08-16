@@ -1,4 +1,4 @@
-import INewNode from 'classes/util/interfaces/INewNode';
+import INewNode from 'classes/util/interfaces/NewNodeParams';
 import ITodoItem from 'classes/util/interfaces/ITodoItem';
 import { TodoInfoForLS } from '../../util/types/TodoInfoForLS';
 import InputNodeCreator from '../../util/input-creator';
@@ -17,8 +17,6 @@ export default class TodoViewItem extends View {
     const params: INewNode = {
       tag: 'li',
       cssClasses: todo.isCompleted ? ['todo-item', 'todo-item_completed'] : ['todo-item'],
-      textContent: null,
-      callback: null,
     };
     super(params);
     this.text = todo.text;
@@ -52,22 +50,17 @@ export default class TodoViewItem extends View {
       tag: 'p',
       cssClasses: ['todo-item__text'],
       textContent: this.text,
-      callback: null,
     });
 
     const optionContainer = new NodeCreator({
       tag: 'ul',
       cssClasses: ['todo-options'],
-      textContent: null,
-      callback: null,
     });
 
     const todoInput = new InputNodeCreator({
       tag: 'input',
       type: 'text',
-      textContent: null,
       cssClasses: ['todo-options__input'],
-      callback: null,
     });
     todoInput.getNode().value = this.text;
 

@@ -1,5 +1,5 @@
 import './wrapper.scss';
-import INewNode from 'classes/util/interfaces/INewNode';
+import INewNode from 'classes/util/interfaces/NewNodeParams';
 import NodeCreator from '../../util/node-creator';
 import View from '../view';
 import EventEmitter from '../emitter/event-emitter';
@@ -18,7 +18,6 @@ export default class Wrapper extends View {
     const params: INewNode = {
       tag: 'div',
       cssClasses: ['wrapper'],
-      textContent: null,
       callback: null,
     };
     super(params);

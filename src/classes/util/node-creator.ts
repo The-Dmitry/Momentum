@@ -1,10 +1,10 @@
-import INewNode from './interfaces/INewNode';
+import NewNodeParams from './interfaces/NewNodeParams';
 import { ListenerCallback } from './types/ListenerCallbackType';
 
-export default class NodeCreator {
-  protected node: HTMLElement;
+export default class NodeCreator<T extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap> {
+  protected node: HTMLElementTagNameMap[T];
 
-  constructor(params: INewNode) {
+  constructor(params: NewNodeParams<T>) {
     this.node = this.createNode(params);
   }
 
@@ -12,13 +12,12 @@ export default class NodeCreator {
     return this.node;
   }
 
-  protected createNode(params: INewNode): HTMLElement {
-    this.node = document.createElement(params.tag);
-    this.setClassNames(params.cssClasses);
-    this.setTextContent(params.textContent);
-    this.setCallback(params.callback);
-    this.setId(params.id);
-    this.setForAttr(params.for);
+  protected createNode(params: NewNodeParams<T>) {
+    this.node = document.createElement<T>(params.tag);
+    if (params.cssClasses) this.setClassNames(params.cssClasses);
+    if (params.textContent) this.setTextContent(params.textContent);
+    if (params.callback) this.setCallback(params.callback);
+    if (params.id) this.setId(params.id);
     return this.node;
   }
 
@@ -47,12 +46,6 @@ export default class NodeCreator {
     }
   }
 
-  protected setForAttr(name: string | undefined) {
-    if (name) {
-      this.node.setAttribute('for', name);
-    }
-  }
-
   public addInnerNode(...list: (NodeCreator | HTMLElement)[]) {
     list.forEach((node) => {
       if (node instanceof NodeCreator) {
@@ -63,7 +56,7 @@ export default class NodeCreator {
     });
   }
 
-  public prependInnerNode(...list: (NodeCreator | HTMLElement)[]) {
+  public prependInnerNode(...list: (NodeCreator<T> | HTMLElement)[]) {
     list.forEach((node) => {
       if (node instanceof NodeCreator) {
         this.node.prepend(node.getNode());

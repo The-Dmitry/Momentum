@@ -1,5 +1,5 @@
 import './clock.scss';
-import INewNode from 'classes/util/interfaces/INewNode';
+import NewNodeParams from 'classes/util/interfaces/NewNodeParams';
 import NodeCreator from '../../util/node-creator';
 import View from '../view';
 import EventEmitter from '../emitter/event-emitter';
@@ -8,34 +8,27 @@ export default class ClockView extends View {
   private emitter: EventEmitter;
 
   constructor() {
-    const params: INewNode = {
+    const params: NewNodeParams = {
       tag: 'section',
       cssClasses: ['clock'],
-      textContent: null,
-      callback: null,
     };
     super(params);
+
     this.emitter = EventEmitter.getInstance();
     this.configureView();
   }
 
   private configureView(): void {
-    const timeParams: INewNode = {
+    const time = new NodeCreator({
       tag: 'div',
       cssClasses: ['time'],
-      textContent: null,
-      callback: null,
-    };
-    const time = new NodeCreator(timeParams);
+    });
     this.viewNode.addInnerNode(time);
 
-    const dateParams: INewNode = {
+    const date = new NodeCreator({
       tag: 'div',
       cssClasses: ['date'],
-      textContent: null,
-      callback: null,
-    };
-    const date = new NodeCreator(dateParams);
+    });
     this.viewNode.addInnerNode(date);
     this.updateClock(time, date);
   }
@@ -46,7 +39,13 @@ export default class ClockView extends View {
       this.emitter.dispatch('part-of-day');
     }
     timeNode.setTextContent(dateObj.toLocaleTimeString());
-    dateNode.setTextContent(dateObj.toLocaleDateString('en-GB', { weekday: 'long', month: 'long', day: 'numeric' }));
+    dateNode.setTextContent(
+      dateObj.toLocaleDateString('en-GB', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+      })
+    );
     setTimeout(() => {
       this.updateClock(timeNode, dateNode);
     }, 1000);
