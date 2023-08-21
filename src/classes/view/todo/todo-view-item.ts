@@ -40,6 +40,7 @@ export default class TodoViewItem extends View {
           this.viewNode.setClassNames(['todo-item']);
         }
         this.emitter.dispatch('update-todo');
+        this.emitter.dispatch('update-todo-button');
       },
     });
     if (this.isCompleted) {
@@ -76,7 +77,7 @@ export default class TodoViewItem extends View {
 
     const optionEdit = new NodeCreator({
       tag: 'li',
-      cssClasses: ['todo-options__edit'],
+      cssClasses: ['todo-options__button', 'todo-options__edit'],
       textContent: 'edit',
       callback: () => {
         item.getNode().remove();
@@ -86,10 +87,11 @@ export default class TodoViewItem extends View {
     });
     const optionDelete = new NodeCreator({
       tag: 'li',
-      cssClasses: ['todo-options__delete'],
+      cssClasses: ['todo-options__button', 'todo-options__delete'],
       textContent: 'delete',
       callback: () => {
         this.deleteTodo();
+        this.emitter.dispatch('update-todo-button');
       },
     });
     this.emitter.subscribe('close-todo-options', () => {
@@ -107,7 +109,7 @@ export default class TodoViewItem extends View {
       textContent: '...',
       callback: () => {
         this.emitter.dispatch('close-todo-options');
-        optionBtn.addInnerNode(optionContainer);
+        this.viewNode.addInnerNode(optionContainer);
       },
     });
 

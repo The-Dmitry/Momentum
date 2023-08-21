@@ -1,10 +1,11 @@
-import { ListenerCallback } from '../types/ListenerCallbackType';
+// import { ListenerCallback } from '../types/ListenerCallbackType';
 
 export default interface NewNodeParams<K = keyof HTMLElementTagNameMap> {
   tag: K;
   cssClasses?: string[];
   textContent?: string;
-  callback?: ListenerCallback;
+  callback?: (e: Event) => void;
+  attribute?: string;
   id?: string;
 }
 

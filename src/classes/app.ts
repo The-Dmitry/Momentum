@@ -3,6 +3,7 @@ import './font.scss';
 import ClockView from './view/clock/clock-view';
 import Player from './view/player/player-view';
 import Todo from './view/todo/todo-view';
+import Weather from './view/weather/weather-view';
 import Wrapper from './view/wrapper/wrapper-view';
 
 export default class App {
@@ -16,8 +17,9 @@ export default class App {
     const clock = new ClockView();
     const player = new Player();
     const todo = new Todo();
+    const weather = new Weather();
 
     document.body.append(wrapper.getElement());
-    wrapper.addInnerElement(clock, player, todo);
+    wrapper.addInnerElement(clock, player, todo, weather);
   }
 }

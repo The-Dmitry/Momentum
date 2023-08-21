@@ -7,7 +7,6 @@ $player-width: 240px;
   grid-template-rows: repeat(1, minmax(auto, 30px));
   align-self: start;
   max-width: $player-width;
-  margin: 10px 0 0 10px;
   background-color: rgba(0, 0, 0, 0.514);
   border-radius: 10px;
   user-select: none;

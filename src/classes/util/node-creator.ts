@@ -1,5 +1,4 @@
 import NewNodeParams from './interfaces/NewNodeParams';
-import { ListenerCallback } from './types/ListenerCallbackType';
 
 export default class NodeCreator<T extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap> {
   protected node: HTMLElementTagNameMap[T];
@@ -18,31 +17,34 @@ export default class NodeCreator<T extends keyof HTMLElementTagNameMap = keyof H
     if (params.textContent) this.setTextContent(params.textContent);
     if (params.callback) this.setCallback(params.callback);
     if (params.id) this.setId(params.id);
+    if (params.attribute) this.setAttribute(params.attribute);
     return this.node;
   }
 
-  public setClassNames(cssList: string[] | null) {
+  public setClassNames(cssList: NewNodeParams['cssClasses']) {
     if (cssList) {
       this.node.className = '';
       this.node.classList.add(...cssList);
     }
   }
 
-  public setTextContent(text: string | null) {
-    this.node.textContent = text;
+  public setTextContent(text: NewNodeParams['textContent']) {
+    if (text) this.node.textContent = text;
   }
 
-  public setCallback(callback: ListenerCallback, handler: string = 'click') {
-    if (callback) {
-      this.node.addEventListener(handler, (e) => {
-        callback(e);
-      });
-    }
+  public setCallback(callback: (e: Event) => void, handler: keyof GlobalEventHandlersEventMap = 'click') {
+    this.node.addEventListener(handler, (e) => {
+      callback(e);
+    });
   }
 
-  protected setId(id: string | undefined) {
-    if (id) {
-      this.node.id = id;
+  protected setId(id: NewNodeParams['id']) {
+    if (id) this.node.id = id;
+  }
+
+  public setAttribute(name: NewNodeParams['attribute'], type: string = 'for') {
+    if (name) {
+      this.node.setAttribute(type, name);
     }
   }
 
@@ -56,7 +58,7 @@ export default class NodeCreator<T extends keyof HTMLElementTagNameMap = keyof H
     });
   }
 
-  public prependInnerNode(...list: (NodeCreator<T> | HTMLElement)[]) {
+  public prependInnerNode(...list: (NodeCreator | HTMLElement)[]) {
     list.forEach((node) => {
       if (node instanceof NodeCreator) {
         this.node.prepend(node.getNode());
@@ -72,3 +74,13 @@ export default class NodeCreator<T extends keyof HTMLElementTagNameMap = keyof H
     }
   }
 }
+
+// const test = new NodeCreator({
+//   tag: 'div',
+//   cssClasses: ['lel'],
+// });
+
+// test.getNode()
+// test.setCallback((e) => {
+//   if(e instanceof KeyboardEvent)
+// }, 'mousedown')

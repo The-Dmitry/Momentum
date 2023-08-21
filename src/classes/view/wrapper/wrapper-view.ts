@@ -18,7 +18,6 @@ export default class Wrapper extends View {
     const params: INewNode = {
       tag: 'div',
       cssClasses: ['wrapper'],
-      callback: null,
     };
     super(params);
     this.bgNumber = 1;

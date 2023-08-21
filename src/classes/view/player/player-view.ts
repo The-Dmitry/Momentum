@@ -1,5 +1,5 @@
 import './player.scss';
-import INewNode from 'classes/util/interfaces/NewNodeParams';
+import NewNodeParams from 'classes/util/interfaces/NewNodeParams';
 import IStation from 'classes/util/interfaces/IStation';
 import IStationList from 'classes/util/interfaces/IStationList';
 import NodeCreator from '../../util/node-creator';
@@ -22,10 +22,9 @@ export default class Player extends View {
   private isListOpened: boolean = false;
 
   constructor() {
-    const params: INewNode = {
+    const params: NewNodeParams = {
       tag: 'section',
       cssClasses: ['player'],
-      callback: null,
     };
     super(params);
     this.emitter = EventEmitter.getInstance();
@@ -68,7 +67,6 @@ export default class Player extends View {
         tag: 'div',
         cssClasses: ['song-name'],
         textContent: songName || '',
-        callback: null,
       });
       this.appendNodesArray([songNameArea]);
       this.emitter.subscribe('delete-song-name', () => {
@@ -91,7 +89,7 @@ export default class Player extends View {
       this.isListOpened = true;
       return;
     }
-    const cross: INewNode = {
+    const cross: NewNodeParams = {
       tag: 'div',
       cssClasses: ['close'],
       callback: () => {
@@ -99,21 +97,19 @@ export default class Player extends View {
         this.isListOpened = false;
       },
     };
-    const parent: INewNode = {
+    const parent: NewNodeParams = {
       tag: 'div',
       cssClasses: ['playlist'],
-      callback: this.emitter.subscribe('closePlayer', () => this.playListNode?.remove()),
     };
-    const playlistTitle: INewNode = {
+    this.emitter.subscribe('closePlayer', () => this.playListNode?.remove());
+    const playlistTitle: NewNodeParams = {
       tag: 'h2',
       textContent: 'Radio Record',
       cssClasses: ['playlist__title'],
-      callback: null,
     };
-    const list: INewNode = {
+    const list: NewNodeParams = {
       tag: 'ul',
       cssClasses: ['playlist__list'],
-      callback: null,
     };
     this.isListOpened = true;
     const parentNode = new NodeCreator(parent);
@@ -138,7 +134,7 @@ export default class Player extends View {
     } else {
       css = ['playlist-item'];
     }
-    const container: INewNode = {
+    const container: NewNodeParams = {
       tag: 'li',
       cssClasses: css,
       callback: () => {
@@ -155,11 +151,10 @@ export default class Player extends View {
         this.emitter.dispatch('song', `${this.songId}`);
       },
     };
-    const title: INewNode = {
+    const title: NewNodeParams = {
       tag: 'p',
       cssClasses: ['playlist-item__title'],
       textContent: `${station.title}`,
-      callback: null,
     };
     const result = new NodeCreator(container);
     result.getNode().style.backgroundImage = `url(${station.icon_gray})`;

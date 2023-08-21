@@ -4,5 +4,4 @@ export default interface INewInputNode<T = keyof HTMLElementTagNameMap> extends 
   type?: string;
   placeholder?: string;
   name?: string;
-  for?: string;
 }
