@@ -41,6 +41,9 @@ export default class Settings extends View {
       },
     });
     this.createSettingsList(settingsList);
+    this.createElementForBackground(settingsList);
+    this.createElementForBGTag(settingsList);
+
     settingsContainer.addInnerNode(settingsList, closeSettings);
     this.CreatedSettingsNode = settingsContainer;
     const settingsButton = new NodeCreator({
@@ -109,5 +112,84 @@ export default class Settings extends View {
     window.addEventListener('beforeunload', () => {
       localStorage.setItem('settings-params', JSON.stringify(state));
     });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private createElementForBGTag(parent: NodeCreator) {
+    const listItem = new NodeCreator({
+      tag: 'li',
+      cssClasses: ['settings-list_item'],
+    });
+    const text = new NodeCreator({
+      tag: 'p',
+      cssClasses: ['settings-list_text'],
+      textContent: 'Img tag',
+    });
+    const input = new InputNodeCreator({
+      tag: 'input',
+      type: 'text',
+      cssClasses: ['settings-list_tag-input'],
+    });
+    if (localStorage.getItem('backgroundTag')) {
+      input.getNode().value = localStorage.getItem('backgroundTag') as string;
+    }
+    input.setCallback((e) => {
+      if (e instanceof KeyboardEvent) {
+        if (e.code === 'Enter') {
+          const tag = input.getNode().value;
+          if (tag === '') {
+            return;
+          }
+          this.emitter.dispatch('background-tag', tag);
+        }
+      }
+    }, 'keydown');
+    listItem.addInnerNode(text, input);
+    parent.addInnerNode(listItem);
+  }
+
+  private createElementForBackground(parent: NodeCreator) {
+    const listItem = new NodeCreator({
+      tag: 'li',
+      cssClasses: ['settings-list_item'],
+    });
+    const text = new NodeCreator({
+      tag: 'p',
+      cssClasses: ['settings-list_text'],
+      textContent: 'Img src',
+    });
+    const select = new InputNodeCreator({
+      tag: 'select',
+      cssClasses: ['settings-list_select'],
+    });
+    select.setCallback(() => {
+      this.emitter.dispatch('background-source', select.getNode().value.toLowerCase());
+    }, 'change');
+    const option1 = new InputNodeCreator({
+      tag: 'option',
+      textContent: 'github',
+    });
+    const option2 = new InputNodeCreator({
+      tag: 'option',
+      textContent: 'flickr',
+    });
+    const option3 = new InputNodeCreator({
+      tag: 'option',
+      textContent: 'unsplash',
+    });
+    select.addInnerNode(option1, option2, option3);
+    const source = localStorage.getItem('background-source');
+    if (source) {
+      select.getNode().childNodes.forEach((node) => {
+        if (node.textContent === source) {
+          (node as HTMLInputElement).setAttribute('selected', 'true');
+        }
+      });
+    }
+    this.emitter.subscribe('background-tag-error', () => {
+      option1.getNode().selected = true;
+    });
+    listItem.addInnerNode(text, select);
+    parent.addInnerNode(listItem);
   }
 }

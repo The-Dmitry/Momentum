@@ -9,7 +9,7 @@
   overflow: auto;
   position: relative;
   width: 100%;
-  max-width: 200px;
+  max-width: 210px;
   border-radius: 5%;
   animation: pop-up 0.3s;
   & .close {
@@ -59,4 +59,13 @@
 
 .settings-list_text {
   text-transform: capitalize;
+}
+
+.settings-list_select {
+  text-transform: capitalize;
+  border: none;
+}
+
+.settings-list_tag-input {
+  max-width: 100px;
 }

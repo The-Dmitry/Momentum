@@ -27,16 +27,29 @@ export default class Wrapper extends View {
     this.bgNumber = 1;
     this.dayPart = ClockView.getPartOfDay();
     this.emitter = EventEmitter.getInstance();
-    if (localStorage.getItem('backgroundTag')) {
-      this.backgroundTag = localStorage.getItem('backgroundTag') as string;
-    } else {
-      this.backgroundTag = ClockView.getPartOfDay();
-    }
+    this.getInfoFromLS();
     this.configureView();
     this.emitter.subscribe('part-of-day', () => {
       this.updateBackground();
     });
-    console.log(this.backgroundTag);
+    this.emitter.subscribe('background-source', (str) => {
+      if (typeof str === 'string') {
+        this.backgroundSource = str as 'github' | 'unsplash' | 'flickr';
+        this.setBackground(0);
+      }
+    });
+    this.emitter.subscribe('background-tag', (str) => {
+      if (typeof str === 'string') {
+        this.backgroundTag = str;
+        this.setBackground(0);
+      }
+    });
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('background-source', this.backgroundSource);
+      if (!['morning', 'afternoon', 'evening', 'night'].includes(this.backgroundTag.toLowerCase())) {
+        localStorage.setItem('backgroundTag', this.backgroundTag);
+      }
+    });
   }
 
   private configureView() {
@@ -58,7 +71,6 @@ export default class Wrapper extends View {
     this.viewNode.addInnerNode(prev);
     this.viewNode.addInnerNode(next);
     this.setBackground(0);
-    // this.getUnsplashBg();
   }
 
   private setBackground(number: number) {
@@ -77,22 +89,27 @@ export default class Wrapper extends View {
   }
 
   private async setFlickrBackground(number: number) {
-    if (this.isAllowedToSwitchBg) {
-      this.isAllowedToSwitchBg = false;
-      setTimeout(() => {
-        this.isAllowedToSwitchBg = true;
-      }, 1500);
-      this.bgNumber = this.validateBgNumber(this.bgNumber + number, 99);
-      const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=2dcf532d206a604fe42259fedbca0044&tags=${this.backgroundTag}&extras=url_k&format=json&nojsoncallback=1`;
-      const response = await fetch(url);
-      const data = await response.json();
-      console.log(data);
-
-      const img = new Image();
-      img.src = data.photos.photo[this.bgNumber].url_k;
-      img.onload = () => {
-        this.getElement().style.backgroundImage = `url(${data.photos.photo[this.bgNumber].url_k})`;
-      };
+    try {
+      if (this.isAllowedToSwitchBg) {
+        this.isAllowedToSwitchBg = false;
+        setTimeout(() => {
+          this.isAllowedToSwitchBg = true;
+        }, 1500);
+        this.bgNumber = this.validateBgNumber(this.bgNumber + number, 99);
+        const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=2dcf532d206a604fe42259fedbca0044&tags=${this.backgroundTag}&extras=url_k&format=json&nojsoncallback=1`;
+        const response = await fetch(url);
+        const data = await response.json();
+        const img = new Image();
+        img.src = data.photos.photo[this.bgNumber].url_k;
+        img.onload = () => {
+          this.getElement().style.backgroundImage = `url(${data.photos.photo[this.bgNumber].url_k})`;
+        };
+        img.onerror = () => {
+          this.inCaseOfEror();
+        };
+      }
+    } catch (e) {
+      this.inCaseOfEror();
     }
   }
 
@@ -113,9 +130,7 @@ export default class Wrapper extends View {
         };
       }
     } catch (e) {
-      this.backgroundSource = 'github';
-      this.isAllowedToSwitchBg = true;
-      this.setBackground(0);
+      this.inCaseOfEror();
     }
   }
 
@@ -159,5 +174,35 @@ export default class Wrapper extends View {
       return 1;
     }
     return number;
+  }
+
+  private inCaseOfEror() {
+    this.backgroundSource = 'github';
+    this.isAllowedToSwitchBg = true;
+    this.setBackground(0);
+    this.emitter.dispatch('background-tag-error');
+    const warning = new NodeCreator({
+      tag: 'div',
+      cssClasses: ['tag-error'],
+      textContent: 'Invalid tag or server is not available',
+    });
+    warning.setCallback(() => {
+      warning.getNode().remove();
+    }, 'animationend');
+    this.viewNode.addInnerNode(warning);
+  }
+
+  private getInfoFromLS() {
+    if (localStorage.getItem('backgroundTag')) {
+      this.backgroundTag = localStorage.getItem('backgroundTag') as string;
+    } else {
+      this.backgroundTag = ClockView.getPartOfDay();
+    }
+
+    if (localStorage.getItem('background-source')) {
+      this.backgroundSource = localStorage.getItem('background-source') as 'github' | 'unsplash' | 'flickr';
+    } else {
+      this.backgroundSource = 'github';
+    }
   }
 }
