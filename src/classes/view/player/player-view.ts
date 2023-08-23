@@ -29,6 +29,11 @@ export default class Player extends View {
     super(params);
     this.emitter = EventEmitter.getInstance();
     this.configureView();
+    this.emitter.subscribe('switch-player-visibility', (bool) => {
+      if (typeof bool === 'boolean') {
+        this.setNodeVisibility(this.viewNode, bool);
+      }
+    });
     this.songId = 0;
     this.song = new Audio();
     this.song.src = music.stations[this.songId].stream_320;
@@ -66,7 +71,7 @@ export default class Player extends View {
       const songNameArea = new NodeCreator({
         tag: 'div',
         cssClasses: ['song-name'],
-        textContent: songName || '',
+        textContent: typeof songName === 'string' ? songName : '',
       });
       this.appendNodesArray([songNameArea]);
       this.emitter.subscribe('delete-song-name', () => {

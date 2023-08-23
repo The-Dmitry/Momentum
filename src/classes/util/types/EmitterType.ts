@@ -1,2 +1,2 @@
-export type SetCollection = Set<(parameter?: string) => void>;
-export type CollectionCallback = (parameter?: string) => void;
+export type SetCollection = Set<(parameter?: string | boolean) => void>;
+export type CollectionCallback = (parameter?: string | boolean) => void;

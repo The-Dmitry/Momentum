@@ -19,7 +19,6 @@ export default class Weather extends View {
     const params: NewNodeParams = {
       tag: 'section',
       cssClasses: ['weather'],
-      callback: () => {},
     };
     super(params);
     this.emitter = EventEmitter.getInstance();
@@ -37,6 +36,11 @@ export default class Weather extends View {
       tag: 'div',
       cssClasses: ['weather-container'],
     });
+    this.emitter.subscribe('switch-weather-visibility', (bool) => {
+      if (typeof bool === 'boolean') {
+        this.setNodeVisibility(this.viewNode, bool);
+      }
+    });
     const cityInput = new InputNodeCreator({
       tag: 'input',
       type: 'text',
@@ -45,29 +49,42 @@ export default class Weather extends View {
     cityInput.getNode().value = this.city;
     cityInput.setCallback((e) => {
       if (e instanceof KeyboardEvent && e.code === 'Enter') {
-        this.city = cityInput.getNode().value.trim();
-
-        this.updateForecast(this.city);
+        const value = cityInput.getNode().value.trim();
+        if (value === '') {
+          cityInput.getNode().value = this.city;
+          this.updateForecast(this.city);
+          return;
+        }
+        this.updateForecast(value);
       }
     }, 'keydown');
+    cityInput.setCallback(() => {
+      cityInput.getNode().value = this.city;
+      this.updateForecast(this.city);
+    }, 'blur');
     this.viewNode.addInnerNode(cityInput, weatherContainer);
     this.weatherContainer = weatherContainer;
     await this.updateForecast(this.city);
     this.generateForecastInfo();
+    setInterval(() => {
+      this.updateForecast(this.city);
+    }, 900000);
   }
 
   private async updateForecast(city: string = 'Minsk') {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&appid=26e356d650c92ed8ad35e52cab77cc42&units=metric`;
-    const response = await fetch(url);
+    const response: Response = await fetch(url);
     const data: ForecastData = await response.json();
-    console.log(data);
     if (data.cod === 200) {
+      this.city = city;
       this.forecastData = data;
       this.generateForecastInfo();
       localStorage.setItem('city', city);
       return;
     }
+
     this.forecastData = null;
+
     this.generateForecastInfo();
   }
 

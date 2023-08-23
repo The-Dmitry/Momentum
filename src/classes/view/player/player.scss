@@ -1,4 +1,4 @@
-$player-width: 240px;
+$player-width: 220px;
 
 .player {
   overflow: hidden;
@@ -10,6 +10,7 @@ $player-width: 240px;
   background-color: rgba(0, 0, 0, 0.514);
   border-radius: 10px;
   user-select: none;
+  transition: all linear 0.3s;
 }
 
 .prev-song {
@@ -58,11 +59,9 @@ $player-width: 240px;
   grid-column: span 4;
   grid-row: 2 / 3;
   width: max-content;
-  // justify-self: center;
   color: white;
   font-size: 20px;
   display: inline-block;
-  // transform: translate(240px, 0);
   animation: marquee 15s linear infinite;
 }
 

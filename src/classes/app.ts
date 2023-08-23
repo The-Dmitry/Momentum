@@ -5,6 +5,7 @@ import Player from './view/player/player-view';
 import Todo from './view/todo/todo-view';
 import Weather from './view/weather/weather-view';
 import Wrapper from './view/wrapper/wrapper-view';
+import Settings from './view/settings/settings-view';
 
 export default class App {
   constructor() {
@@ -18,8 +19,9 @@ export default class App {
     const player = new Player();
     const todo = new Todo();
     const weather = new Weather();
+    const settings = new Settings();
 
     document.body.append(wrapper.getElement());
-    wrapper.addInnerElement(clock, player, todo, weather);
+    wrapper.addInnerElement(clock, player, todo, weather, settings);
   }
 }

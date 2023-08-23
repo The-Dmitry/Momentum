@@ -23,11 +23,21 @@ export default class ClockView extends View {
       tag: 'div',
       cssClasses: ['time'],
     });
+    this.emitter.subscribe('switch-time-visibility', (bool) => {
+      if (typeof bool === 'boolean') {
+        this.setNodeVisibility(time, bool);
+      }
+    });
     this.viewNode.addInnerNode(time);
 
     const date = new NodeCreator({
       tag: 'div',
       cssClasses: ['date'],
+    });
+    this.emitter.subscribe('switch-date-visibility', (bool) => {
+      if (typeof bool === 'boolean') {
+        this.setNodeVisibility(date, bool);
+      }
     });
     this.viewNode.addInnerNode(date);
     this.updateClock(time, date);

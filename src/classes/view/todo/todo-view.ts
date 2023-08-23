@@ -38,6 +38,11 @@ export default class Todo extends View {
     this.emitter = EventEmitter.getInstance();
     this.configureView();
     this.emitter.subscribe('update-todo', () => this.updateTodoList());
+    this.emitter.subscribe('switch-todo-visibility', (bool) => {
+      if (typeof bool === 'boolean') {
+        this.setNodeVisibility(this.viewNode, bool);
+      }
+    });
   }
 
   private configureView() {

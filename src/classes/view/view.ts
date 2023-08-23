@@ -28,4 +28,13 @@ export default class View<T extends keyof HTMLElementTagNameMap = keyof HTMLElem
       this.viewNode.addInnerNode(parent);
     }
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  protected setNodeVisibility(node: NodeCreator, bool: boolean) {
+    if (!bool) {
+      node.getNode().classList.add('hidden');
+      return;
+    }
+    node.getNode().classList.remove('hidden');
+  }
 }

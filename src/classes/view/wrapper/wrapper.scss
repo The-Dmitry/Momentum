@@ -14,7 +14,7 @@ html {
   position: relative;
   height: calc(100% - ($wrapper-padding * 2));
   background-size: cover;
-  transition: background-image linear 0.7s;
+  transition: background-image linear 1.5s;
   padding: $wrapper-padding;
 }
 

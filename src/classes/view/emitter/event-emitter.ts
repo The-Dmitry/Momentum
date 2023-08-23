@@ -22,7 +22,7 @@ export default class EventEmitter {
     }
   }
 
-  public dispatch(eventName: string, parameter?: string) {
+  public dispatch(eventName: string, parameter?: string | boolean) {
     const list = this.listeners.get(eventName);
     if (list && list.size) {
       list.forEach((func) => func(parameter));

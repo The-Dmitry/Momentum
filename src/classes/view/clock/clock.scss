@@ -12,9 +12,16 @@ $index: calc(1vw + 1vh);
 }
 
 .time {
+  transition: all linear 0.3s;
   font-size: calc($index * 5);
 }
 
 .date {
   font-size: calc($index * 2);
+  transition: all linear 0.3s;
+}
+
+.hidden {
+  pointer-events: none;
+  opacity: 0;
 }
