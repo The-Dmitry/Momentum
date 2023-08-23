@@ -92,9 +92,6 @@ export default class Wrapper extends View {
     try {
       if (this.isAllowedToSwitchBg) {
         this.isAllowedToSwitchBg = false;
-        setTimeout(() => {
-          this.isAllowedToSwitchBg = true;
-        }, 1500);
         this.bgNumber = this.validateBgNumber(this.bgNumber + number, 99);
         const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=2dcf532d206a604fe42259fedbca0044&tags=${this.backgroundTag}&extras=url_k&format=json&nojsoncallback=1`;
         const response = await fetch(url);
@@ -103,9 +100,15 @@ export default class Wrapper extends View {
         img.src = data.photos.photo[this.bgNumber].url_k;
         img.onload = () => {
           this.getElement().style.backgroundImage = `url(${data.photos.photo[this.bgNumber].url_k})`;
+          setTimeout(() => {
+            this.isAllowedToSwitchBg = true;
+          }, 1500);
         };
         img.onerror = () => {
           this.inCaseOfEror();
+          setTimeout(() => {
+            this.isAllowedToSwitchBg = true;
+          }, 1500);
         };
       }
     } catch (e) {
@@ -117,15 +120,16 @@ export default class Wrapper extends View {
     try {
       if (this.isAllowedToSwitchBg) {
         this.isAllowedToSwitchBg = false;
-        setTimeout(() => {
-          this.isAllowedToSwitchBg = true;
-        }, 1500);
+
         const url = `https://api.unsplash.com/photos/random?query=${this.backgroundTag}&orientation=landscape&client_id=qMcp0gVu5vldpMh0lROfHBxAhXZdMMsQHHY2xHZ7F00`;
         const response = await fetch(url);
         const data = await response.json();
         const img = new Image();
         img.src = data.urls.regular;
         img.onload = () => {
+          setTimeout(() => {
+            this.isAllowedToSwitchBg = true;
+          }, 1500);
           this.getElement().style.backgroundImage = `url(${data.urls.regular})`;
         };
       }
@@ -177,6 +181,9 @@ export default class Wrapper extends View {
   }
 
   private inCaseOfEror() {
+    setTimeout(() => {
+      this.isAllowedToSwitchBg = true;
+    }, 1500);
     this.backgroundSource = 'github';
     this.isAllowedToSwitchBg = true;
     this.setBackground(0);
